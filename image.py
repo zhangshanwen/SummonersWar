@@ -6,7 +6,7 @@ import common
 from log import *
 
 Threshold = 0.8
-Offset = 70
+Offset = 0
 
 
 class Image:
@@ -45,8 +45,14 @@ class Image:
     def find_fight(self):
         return self.find_page('img/fight.png', "天空岛 战斗--->>>app启动完成")
 
-    def find_dragon(self):
-        return self.find_page('img/dragon.png', "龙之地下城")
+    def find_dragon_dungeon(self):
+        return self.find_page('img/dragon_dungeon.png', "龙之地下城")
+
+    def find_giant_dungeon(self):
+        return self.find_page("img/giant_dungeon.png", "巨人地下城")
+
+    def find_death_dungeon(self):
+        return self.find_page("img/death_dungeon.png", "死亡地下城")
 
     def find_bloody_palace(self):
         return self.find_page('img/bloody_palace.png', "试炼之塔")
@@ -74,6 +80,21 @@ class Image:
 
     def find_next_floor(self):
         return self.find_page("img/next_floor.png", "下一层")
+
+    def find_energy_shortage_need_recharge(self):
+        return self.find_page("img/energy_shortage_need_recharge.png", "能量不足,需要充值")
+
+    def find_energy_shortage(self):
+        return self.find_page("img/energy_shortage.png", "能量不足")
+
+    def find_store(self):
+        return self.find_page("img/store.png", "商店")
+
+    def find_gift_box(self):
+        return self.find_page("img/gift_box.png", "礼物箱")
+
+    def find_shell_selected(self):
+        return self.find_page("img/shell_selected.png", "出售所选")
 
     def show(self):
         img_rgb = cv2.imread('./summoners.png')
