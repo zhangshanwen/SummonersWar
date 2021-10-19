@@ -20,15 +20,16 @@ class Directive:
         self.device_id = ""
         # 检测设备
         self.check_device()
+        self.x = 0
+        self.y = 0
 
     def run_directive(self, directive):
         info(f'执行指令{directive}')
         res = subprocess.getoutput(self.adb + " " + directive)
-        time.sleep(1)
         return res
 
-    def click(self, x, y):
-        return self.run_directive(f"shell input tap {x} {y}")
+    def click(self):
+        return self.run_directive(f"shell input tap {self.x} {self.y}")
 
     def connect_device(self, devices):
         while True:
@@ -72,24 +73,23 @@ class Directive:
         return res.find(common.app_package_name) > -1
 
     def screenshot(self):
-        self.run_directive(" shell screencap  /sdcard/summoners.png")
-        time.sleep(0.5)
+        self.run_directive(f" shell screencap  /sdcard/{common.summoners_base_img}")
 
     def pull(self):
-        self.run_directive("pull /sdcard/summoners.png")
+        self.run_directive(f"pull /sdcard/{common.summoners_base_img}")
+        time.sleep(1.5)
 
     def get_screenshot(self):
         self.screenshot()
-        time.sleep(0.5)
         self.pull()
 
 
 if __name__ == '__main__':
     d = Directive()
     ##1475 909
-    # info(d.click(1545, 979))
+    # d.x, d.y = 484, 1054
+    # info(d.click())
     # d.start_app()
-    info(d.screenshot())
-    info(d.pull())
+    info(d.get_screenshot())
     # info(d.run_directive(d.adb + "  shell pm list packages -3 "))
     # info(d.run_directive(d.adb + " shell dumpsys activity activities | grep mFocusedActivity "))
