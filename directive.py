@@ -13,7 +13,7 @@ class Directive:
         system = platform.system().lower()
         info(f"当前运行环境为:{system}")
         if system == common.windows_os:
-            self.adb = "./command/adb.bat"
+            self.adb = "./command/adb.exe"
         else:
             self.adb = "./command/adb"
         self.has_device = False
