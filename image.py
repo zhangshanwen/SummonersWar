@@ -134,6 +134,7 @@ class Image:
 
 if __name__ == '__main__':
     i = Image()
-    i.show()
+    # i.show()
+    i.find_continuous_fight()
     # # print(i.directive.x, i.directive.y)
     # # i.show()
