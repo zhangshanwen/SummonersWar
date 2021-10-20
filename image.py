@@ -5,7 +5,7 @@ from directive import Directive
 import common
 from log import *
 
-Threshold = 0.8
+Threshold = 0.9
 Offset = 0
 
 
@@ -96,10 +96,31 @@ class Image:
     def find_shell_selected(self):
         return self.find_page("img/shell_selected.png", "出售所选")
 
+    def find_purple(self):
+        return self.find_page("img/purple.png", "紫色")
+
+    def find_yes(self):
+        return self.find_page("img/yes.png", "是")
+
+    def find_store_yes(self):
+        return self.find_page("img/store_yes.png", "是")
+
+    def find_store_confirm(self):
+        return self.find_page("img/store_confirm.png", "确认")
+
+    def find_store_close(self):
+        return self.find_page("img/store_close.png", "关闭")
+
+    def find_five_hundred_red_heart(self):
+        return self.find_page("img/five_hundred_red_heart.png", "500红心")
+
+    def find_red_heart_shortage(self):
+        return self.find_page("img/red_heart_shortage.png", "红心不足")
+
     def show(self):
         img_rgb = cv2.imread('./summoners.png')
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-        template = cv2.imread('img/main_close.png', 0)
+        template = cv2.imread('img/five_hundred_red_heart.png', 0)
         w, h = template.shape[::-1]
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= self.threshold)
@@ -113,6 +134,6 @@ class Image:
 
 if __name__ == '__main__':
     i = Image()
-    loc = i.find_play()
-    # print(i.directive.x, i.directive.y)
-    # i.show()
+    i.show()
+    # # print(i.directive.x, i.directive.y)
+    # # i.show()

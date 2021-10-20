@@ -74,10 +74,11 @@ class Directive:
 
     def screenshot(self):
         self.run_directive(f" shell screencap  /sdcard/{common.summoners_base_img}")
+        time.sleep(2)
 
     def pull(self):
         self.run_directive(f"pull /sdcard/{common.summoners_base_img}")
-        time.sleep(1.5)
+        time.sleep(0.5)
 
     def get_screenshot(self):
         self.screenshot()
