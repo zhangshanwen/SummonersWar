@@ -1,5 +1,6 @@
 import platform
 import time
+import os
 
 import common
 from log import *
@@ -22,6 +23,8 @@ class Directive:
         self.check_device()
         self.x = 0
         self.y = 0
+        self.last_modify_time = 0
+        self.save_last_modify_time()
 
     def run_directive(self, directive):
         info(f'执行指令{directive}')
@@ -74,15 +77,25 @@ class Directive:
 
     def screenshot(self):
         self.run_directive(f" shell screencap  /sdcard/{common.summoners_base_img}")
-        time.sleep(2)
+        time.sleep(0.5)
 
     def pull(self):
         self.run_directive(f"pull /sdcard/{common.summoners_base_img}")
-        time.sleep(0.5)
+        time.sleep(2)
 
     def get_screenshot(self):
+        last_modify_time = os.path.getmtime(common.summoners_base_img)
         self.screenshot()
         self.pull()
+        if self.last_modify_time >= last_modify_time:
+            warning("页面未刷新，重新拉取", self.last_modify_time, last_modify_time)
+            self.get_screenshot()
+        else:
+            self.last_modify_time = last_modify_time
+
+    def save_last_modify_time(self):
+        if os.path.exists(common.summoners_base_img):
+            self.last_modify_time = os.path.getmtime(common.summoners_base_img)
 
 
 if __name__ == '__main__':
@@ -91,6 +104,7 @@ if __name__ == '__main__':
     # d.x, d.y = 484, 1054
     # info(d.click())
     # d.start_app()
-    info(d.get_screenshot())
+    # info(d.get_screenshot())
     # info(d.run_directive(d.adb + "  shell pm list packages -3 "))
     # info(d.run_directive(d.adb + " shell dumpsys activity activities | grep mFocusedActivity "))
+    info(int(d.last_modify_time))

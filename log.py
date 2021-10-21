@@ -1,9 +1,16 @@
-def info(msg):
+def info(*args):
+    msg = " ".join(f"{i}" for i in args)
     print(f"\033[1;32;40m {msg} \033[0m")
 
 
-def warning(msg):
+def warning(*args):
+    msg = " ".join(f"{i}" for i in args)
     print(f"\033[1;31;40m {msg} \033[0m")
+
+
+def debug(*args):
+    msg = " ".join(f"{i}" for i in args)
+    print(f"\033[1;34;40m {msg} \033[0m")
 
 
 def info_start(msg):
@@ -11,4 +18,4 @@ def info_start(msg):
 
 
 if __name__ == '__main__':
-    info("d111")
+    debug("d111", "d222")

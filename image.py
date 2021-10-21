@@ -20,18 +20,22 @@ class Image:
             self.directive = directive
 
     def find_page(self, path, msg=""):
-        img_rgb = cv2.imread(common.summoners_base_img)
-        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-        template = cv2.imread(path, 0)
-        res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
-        loc = np.where(res >= self.threshold)
-        if len(loc[0]) == 0 and len(loc[0]) == 0:
+        try:
+            img_rgb = cv2.imread(common.summoners_base_img)
+            img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+            template = cv2.imread(path, 0)
+            res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+            loc = np.where(res >= self.threshold)
+            if len(loc[0]) == 0 and len(loc[0]) == 0:
+                return False
+            self.directive.x = int(np.mean(loc[1])) + self.offset
+            self.directive.y = int(np.mean(loc[0])) + self.offset
+            if msg:
+                debug(msg)
+            return True
+        except Exception as e:
+            warning(e)
             return False
-        self.directive.x = int(np.mean(loc[1])) + self.offset
-        self.directive.y = int(np.mean(loc[0])) + self.offset
-        if msg:
-            info(msg)
-        return True
 
     def find_ad(self):
         return self.find_page('img/ad_total_not_tip.png', "启动app 弹出广告")
@@ -65,6 +69,9 @@ class Image:
 
     def find_continuous_fight(self):
         return self.find_page("img/continuous_fight.png", "连续战斗")
+
+    def find_end_continuous_fight(self):
+        return self.find_page("img/end_continuous_fight.png", "结束连续战斗")
 
     def find_once_again(self):
         return self.find_page("img/once_again.png", "再来一次")

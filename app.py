@@ -75,6 +75,7 @@ class App:
     def dungeon(self):
         if self.image.find_continuous_fight():
             self.click()
+            info("开始等待")
         elif self.image.find_yes():
             self.click()
         elif self.image.find_once_again():
@@ -82,6 +83,9 @@ class App:
             # if self.shell_rune_tag:
             #     self.shell_rune()
             self.click()
+        elif self.image.find_end_continuous_fight():
+            info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
+            time.sleep(common.dungeon_sleep_time)
 
     def bloody_palace(self):
         if self.image.find_start_fight():
@@ -106,7 +110,6 @@ class App:
             self.do_script(self.dungeon)
         elif self.image.find_death_dungeon():
             self.do_script(self.dungeon)
-
 
         else:
             warning("无法识别当前页面")
