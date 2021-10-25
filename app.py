@@ -20,13 +20,18 @@ class App:
     def click(self):
         self.directive.click()
 
+    def do_arena(self, func):
+        while self.run_tag:
+            info_start("脚本正在执行")
+            self.directive.get_screenshot()
+            func()
+
     def do_script(self, func):
         while self.run_tag:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
             self.check_power()
             func()
-            time.sleep(1)
 
     def red_heart_buy_power(self):
         while True:
@@ -68,8 +73,10 @@ class App:
         pass
 
     def world_arena(self):
-        # TODO 世界竞技场
-        pass
+        if self.image.find_rank_fight():
+            self.click()
+        info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
+        time.sleep(common.dungeon_sleep_time)
 
     def shell_rune(self):
         while True:
@@ -128,7 +135,8 @@ class App:
             self.do_script(self.dungeon)
         elif self.image.find_death_dungeon():
             self.do_script(self.dungeon)
-
+        elif self.image.find_world_arena():
+            self.do_arena(self.world_arena)
         else:
             warning("无法识别当前页面")
 
