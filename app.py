@@ -24,7 +24,7 @@ class App:
         while self.run_tag:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
-            # self.check_power()
+            self.check_power()
             func()
             time.sleep(1)
 
@@ -48,18 +48,27 @@ class App:
                 break
 
     def check_power(self):
-        if self.buy_power_tag and self.image.find_energy_shortage():
-            info("准备购买体力，优先使用红心")
-            if self.enough_red_heart:
-                info("开始使用红心购买体力")
-                if self.image.find_store():
-                    self.click()
-                    self.red_heart_buy_power()
-            else:
-                info("红心不足，使用邮箱体力")
+        # if self.buy_power_tag and self.image.find_energy_shortage():
+        #     info("准备购买体力，优先使用红心")
+        #     if self.enough_red_heart:
+        #         info("开始使用红心购买体力")
+        #         if self.image.find_store():
+        #             self.click()
+        #             self.red_heart_buy_power()
+        #     else:
+        #         info("红心不足，使用邮箱体力")
+        if self.image.find_energy_shortage():
+            if self.image.find_main_close():
+                self.click()
+                info(f"等待{common.dungeon_sleep_time}，补充能量")
+                time.sleep(common.dungeon_sleep_time)
 
     def arena(self):
         # TODO 竞技场
+        pass
+
+    def world_arena(self):
+        # TODO 世界竞技场
         pass
 
     def shell_rune(self):
@@ -75,6 +84,8 @@ class App:
                 self.click()
             elif self.image.find_sell_selected_confirm():
                 self.click()
+            else:
+                break
 
             self.directive.get_screenshot()
 

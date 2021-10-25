@@ -11,7 +11,6 @@ import subprocess
 class Directive:
     def __init__(self, base_img=common.summoners_base_img, package_name=common.app_package_name):
         info_start("开始检测当前环境")
-        self.remove_base_image()
         system = platform.system().lower()
         info(f"当前运行环境为:{system}")
         if system == common.windows_os:
@@ -21,6 +20,7 @@ class Directive:
         self.has_device = False
         self.device_id = ""
         self.base_img = base_img
+        self.remove_base_image()
         self.package_name = package_name
         # 检测设备
         self.check_device()
