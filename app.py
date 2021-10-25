@@ -4,17 +4,18 @@ import time
 import common
 from log import *
 from directive import Directive
-from image import Image
+from image.com2us import Com2usImage
 
 
 class App:
     def __init__(self):
         self.directive = Directive()
-        self.image = Image(directive=self.directive)
+        self.image = Com2usImage(directive=self.directive)
         self.run_tag = True
         self.buy_power_tag = True
         self.enough_red_heart = True
         self.shell_rune_tag = True
+        self.no_shelled_rune = True
 
     def click(self):
         self.directive.click()
@@ -62,14 +63,19 @@ class App:
         pass
 
     def shell_rune(self):
-        shell_unselected = True
         while True:
-            if shell_unselected and self.image.find_shell_selected():
+            if self.image.find_yes():
                 self.click()
-                shell_unselected = False
-            else:
-                if self.image.find_purple():
+                break
+            elif self.image.find_no_sell():
+                if self.image.find_store_confirm():
                     self.click()
+                    break
+            elif self.image.find_sell_selected():
+                self.click()
+            elif self.image.find_sell_selected_confirm():
+                self.click()
+
             self.directive.get_screenshot()
 
     def dungeon(self):
@@ -79,10 +85,12 @@ class App:
         elif self.image.find_yes():
             self.click()
         elif self.image.find_once_again():
-            # TODO 出售符文,自动购买体力
-            # if self.shell_rune_tag:
-            #     self.shell_rune()
+            if self.no_shelled_rune and self.shell_rune_tag:
+                self.shell_rune()
+                self.no_shelled_rune = False
+                return
             self.click()
+            self.no_shelled_rune = True
         elif self.image.find_end_continuous_fight():
             info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
             time.sleep(common.dungeon_sleep_time)
@@ -124,3 +132,5 @@ if __name__ == '__main__':
     app.run()
     # app.do_script(app.dungeon)
     # app.red_heart_buy_power()
+    # app.directive.get_screenshot()
+    # app.shell_rune()

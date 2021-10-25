@@ -11,7 +11,7 @@ class Gui(QWidget):
         self.buy_power_tag = False
         self.shell_rune_tag = False
 
-        self.starting = False
+        self.starting = True
 
         self.cb_power = QCheckBox('自动购买体力', self)
         self.cb_power.move(20, 20)

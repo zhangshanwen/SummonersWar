@@ -9,8 +9,9 @@ import subprocess
 
 
 class Directive:
-    def __init__(self):
+    def __init__(self, base_img=common.summoners_base_img, package_name=common.app_package_name):
         info_start("开始检测当前环境")
+        self.remove_base_image()
         system = platform.system().lower()
         info(f"当前运行环境为:{system}")
         if system == common.windows_os:
@@ -19,6 +20,8 @@ class Directive:
             self.adb = "./command/adb"
         self.has_device = False
         self.device_id = ""
+        self.base_img = base_img
+        self.package_name = package_name
         # 检测设备
         self.check_device()
         self.x = 0
@@ -26,9 +29,14 @@ class Directive:
         self.last_modify_time = 0
         self.save_last_modify_time()
 
+    def remove_base_image(self):
+        if os.path.exists(self.base_img):
+            os.remove(self.base_img)
+
     def run_directive(self, directive):
-        info(f'执行指令{directive}')
-        res = subprocess.getoutput(self.adb + " " + directive)
+        directive = self.adb + " " + directive
+        info(f'执行指令 {directive}')
+        res = subprocess.getoutput(directive)
         return res
 
     def click(self):
@@ -67,24 +75,32 @@ class Directive:
                 self.device_id = devices[0]
 
     def start_app(self):
-        info("正在启动应用")
-        self.run_directive(f"shell am start -W -n {common.app_package_name}")
+        info_start("正在启动应用")
+        self.run_directive(f"shell am start -W -n {self.package_name}")
+        if not self.check_current_active():
+            self.start_app()
+
+    def stop_app(self):
+        info_start("正在关闭应用")
+        self.run_directive(f" shell am force-stop {self.package_name.split('/')[0]}")
 
     def check_current_active(self):
         res = self.run_directive("shell dumpsys activity | grep mResumedActivity")
-        info(res)
-        return res.find(common.app_package_name) > -1
+        info(res.find(self.package_name.split('/')[0]))
+        return res.find(self.package_name.split('/')[0]) > -1
 
     def screenshot(self):
-        self.run_directive(f" shell screencap  /sdcard/{common.summoners_base_img}")
+        self.run_directive(f" shell screencap  /sdcard/{self.base_img}")
         time.sleep(0.5)
 
     def pull(self):
-        self.run_directive(f"pull /sdcard/{common.summoners_base_img}")
+        self.run_directive(f"pull /sdcard/{self.base_img}")
         time.sleep(2)
 
     def get_screenshot(self):
-        last_modify_time = os.path.getmtime(common.summoners_base_img)
+        last_modify_time = 0
+        if os.path.exists(self.base_img):
+            last_modify_time = os.path.getmtime(self.base_img)
         self.screenshot()
         self.pull()
         if self.last_modify_time >= last_modify_time:
@@ -94,8 +110,8 @@ class Directive:
             self.last_modify_time = last_modify_time
 
     def save_last_modify_time(self):
-        if os.path.exists(common.summoners_base_img):
-            self.last_modify_time = os.path.getmtime(common.summoners_base_img)
+        if os.path.exists(self.base_img):
+            self.last_modify_time = os.path.getmtime(self.base_img)
 
 
 if __name__ == '__main__':
@@ -105,6 +121,7 @@ if __name__ == '__main__':
     # info(d.click())
     # d.start_app()
     # info(d.get_screenshot())
-    # info(d.run_directive(d.adb + "  shell pm list packages -3 "))
-    # info(d.run_directive(d.adb + " shell dumpsys activity activities | grep mFocusedActivity "))
-    info(int(d.last_modify_time))
+    # info(d.run_directive("  shell pm list packages -3 "))
+    # info(d.run_directive(" shell dumpsys activity top | grep ACTIVITY "))
+    # info(int(d.last_modify_time))
+    # info(d.check_current_active())
