@@ -75,7 +75,6 @@ class App:
         while True:
             if self.image.find_yes():
                 self.click()
-                break
             elif self.image.find_no_sell():
                 if self.image.find_store_confirm():
                     self.click()

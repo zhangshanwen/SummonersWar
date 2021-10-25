@@ -91,11 +91,11 @@ class Directive:
 
     def screenshot(self):
         self.run_directive(f" shell screencap  /sdcard/{self.base_img}")
-        time.sleep(0.5)
+        time.sleep(1)
 
     def pull(self):
         self.run_directive(f"pull /sdcard/{self.base_img}")
-        time.sleep(2)
+        time.sleep(1.5)
 
     def get_screenshot(self):
         last_modify_time = 0
