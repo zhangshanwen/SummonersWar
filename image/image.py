@@ -6,7 +6,7 @@ from directive import Directive
 import common
 from log import *
 
-Threshold = 0.9
+Threshold = 0.8
 Offset = 0
 
 
@@ -19,7 +19,9 @@ class Image:
         self.is_landscape = is_landscape
         self.base_image = os.path.realpath(base_imag)
         if directive is None:
-            self.directive = Directive()
+            # self.directive = Directive()
+
+            pass
         else:
             self.directive = directive
 
@@ -49,9 +51,9 @@ class Image:
             return False
 
     def show(self):
-        img_rgb = cv2.imread('../dd.png')
+        img_rgb = cv2.imread('../summoners.png')
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-        template = cv2.imread('img/dd/check_point.png', 0)
+        template = cv2.imread('../img/com2us/store_confirm.png', 0)
         w, h = template.shape[::-1]
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= self.threshold)

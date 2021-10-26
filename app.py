@@ -25,6 +25,7 @@ class App:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
             func()
+            time.sleep(1)
 
     def do_script(self, func):
         while self.run_tag:
@@ -32,6 +33,7 @@ class App:
             self.directive.get_screenshot()
             self.check_power()
             func()
+            time.sleep(1)
 
     def red_heart_buy_power(self):
         while True:
@@ -73,10 +75,21 @@ class App:
         pass
 
     def world_arena(self):
-        if self.image.find_rank_fight():
+        if self.image.find_store_confirm():
             self.click()
-        info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
-        time.sleep(common.dungeon_sleep_time)
+        elif self.image.find_rank_fight():
+            self.click()
+        elif self.image.find_victory():
+            self.click()
+        elif self.image.find_failed():
+            self.click()
+        elif self.image.find_play():
+            self.click()
+        elif self.image.find_confirm():
+            self.click()
+        else:
+            info(f"休眠{common.world_arena_sleep_time}", "节省数据开销")
+            time.sleep(common.world_arena_sleep_time)
 
     def shell_rune(self):
         while True:
@@ -148,6 +161,8 @@ class App:
 if __name__ == '__main__':
     app = App()
     app.run()
+    # app.directive.get_screenshot()
+    # app.world_arena()
     # app.do_script(app.dungeon)
     # app.red_heart_buy_power()
     # app.directive.get_screenshot()

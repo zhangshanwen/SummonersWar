@@ -100,3 +100,6 @@ class Com2usImage(Image):
 
     def find_rank_fight(self):
         return self.find_page("img/com2us/rank_fight.png", "排行战")
+
+    def find_failed(self):
+        return self.find_page("img/com2us/failed.png", "失败")
