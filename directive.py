@@ -120,7 +120,7 @@ if __name__ == '__main__':
     # d.x, d.y = 484, 1054
     # info(d.click())
     # d.start_app()
-    # info(d.get_screenshot())
+    info(d.get_screenshot())
     # info(d.run_directive("  shell pm list packages -3 "))
     # info(d.run_directive(" shell dumpsys activity top | grep ACTIVITY "))
     # info(int(d.last_modify_time))

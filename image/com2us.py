@@ -103,3 +103,6 @@ class Com2usImage(Image):
 
     def find_failed(self):
         return self.find_page("img/com2us/failed.png", "失败")
+
+    def find_cancel(self):
+        return self.find_page("img/com2us/cancel.png", "取消")

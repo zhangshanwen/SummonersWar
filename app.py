@@ -92,19 +92,21 @@ class App:
             time.sleep(common.world_arena_sleep_time)
 
     def shell_rune(self):
+        is_sell = False
         while True:
-            if self.image.find_yes():
+            if is_sell and self.image.find_cancel():
+                self.click()
+                break
+            elif self.image.find_yes():
                 self.click()
             elif self.image.find_no_sell():
                 if self.image.find_store_confirm():
                     self.click()
-                    break
+                    is_sell = True
             elif self.image.find_sell_selected():
                 self.click()
             elif self.image.find_sell_selected_confirm():
                 self.click()
-            else:
-                break
 
             self.directive.get_screenshot()
 
@@ -162,6 +164,7 @@ if __name__ == '__main__':
     app = App()
     app.run()
     # app.directive.get_screenshot()
+    # app.shell_rune()
     # app.world_arena()
     # app.do_script(app.dungeon)
     # app.red_heart_buy_power()
