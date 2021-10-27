@@ -8,12 +8,13 @@ from image.com2us import Com2usImage
 
 
 class App:
-    def __init__(self, buy_power_tag=True, enough_red_heart=True):
+    def __init__(self, buy_power_tag=True, shell_rune_tag=True, email_power_tag=True):
         self.directive = Directive()
         self.image = Com2usImage(directive=self.directive)
         self.run_tag = True
         self.buy_power_tag = buy_power_tag
-        self.shell_rune_tag = enough_red_heart
+        self.shell_rune_tag = shell_rune_tag
+        self.email_power_tag = email_power_tag
 
         self.enough_red_heart = True
         self.enough_email_power = True
@@ -86,20 +87,19 @@ class App:
     def check_power(self):
         if not self.image.find_energy_shortage():
             return
-        if self.buy_power_tag:
-            info("准备购买体力，优先使用红心")
-            if self.enough_red_heart:
-                info("开始使用红心购买体力")
-                if self.image.find_store():
-                    self.click()
-                    self.red_heart_buy_power()
-                    return
-            elif self.enough_email_power:
-                info("开始领取邮箱体力")
-                if self.image.find_gift_box():
-                    self.click()
-                    self.gift_box_power()
-                    return
+        info("准备购买体力，优先使用红心")
+        if self.buy_power_tag and self.enough_red_heart:
+            info("开始使用红心购买体力")
+            if self.image.find_store():
+                self.click()
+                self.red_heart_buy_power()
+                return
+        elif self.email_power_tag and self.enough_email_power:
+            info("开始领取邮箱体力")
+            if self.image.find_gift_box():
+                self.click()
+                self.gift_box_power()
+                return
         if self.image.find_main_close():
             self.click()
             info(f"等待{common.dungeon_sleep_time}，补充能量")
