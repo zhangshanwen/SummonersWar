@@ -92,13 +92,20 @@ class Directive:
         return res.find(self.package_name.split('/')[0]) > -1
 
     def screenshot(self):
-        if self.run_directive(f" shell screencap  /sdcard/{self.base_img}"):
-            time.sleep(0.5)
+        res = self.run_directive(f" shell screencap  /sdcard/{self.base_img}")
+        if "failed" in str(res):
+            warning(res)
+            time.sleep(1)
             self.screenshot()
             return
 
     def pull(self):
-        info(self.run_directive(f"pull /sdcard/{self.base_img}"))
+        res = self.run_directive(f"pull /sdcard/{self.base_img}")
+        if "failed" in str(res):
+            warning(res)
+            time.sleep(1)
+            self.pull()
+            return
 
     def get_screenshot(self):
         last_modify_time = 0
