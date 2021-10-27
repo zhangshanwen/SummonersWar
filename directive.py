@@ -63,6 +63,8 @@ class Directive:
         res = self.run_directive("devices")
         devices = []
         if res:
+            if len(res.splitlines()) <= 1:
+                return
             for i in res.splitlines()[1:]:
                 if i.split()[1] == "device":
                     device = i.split()[0]

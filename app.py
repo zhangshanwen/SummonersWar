@@ -8,14 +8,15 @@ from image.com2us import Com2usImage
 
 
 class App:
-    def __init__(self):
+    def __init__(self, buy_power_tag=True, enough_red_heart=True):
         self.directive = Directive()
         self.image = Com2usImage(directive=self.directive)
         self.run_tag = True
-        self.buy_power_tag = True
+        self.buy_power_tag = buy_power_tag
+        self.shell_rune_tag = enough_red_heart
+
         self.enough_red_heart = True
         self.enough_email_power = True
-        self.shell_rune_tag = True
         self.no_shelled_rune = True
 
     def click(self):
@@ -33,6 +34,13 @@ class App:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
             self.check_power()
+            func()
+            time.sleep(1)
+
+    def do_dimension(self, func):
+        while self.run_tag:
+            info_start("次元脚本正在执行")
+            self.directive.get_screenshot()
             func()
             time.sleep(1)
 
@@ -185,10 +193,13 @@ class App:
 
     def run(self):
         info_start("程序开始启动")
+        if not self.directive.device_id:
+            warning("没有检测到设备")
+            return
         self.run_script()
 
 
-if __name__ == '__main__':
+if __name__ == '__main_ _':
     app = App()
     app.run()
     # app.directive.get_screenshot()
