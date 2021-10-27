@@ -19,6 +19,7 @@ class App:
         self.enough_red_heart = True
         self.enough_email_power = True
         self.no_shelled_rune = True
+        self.enough_world_arena_times = True
 
     def click(self):
         self.directive.click()
@@ -29,6 +30,7 @@ class App:
             self.directive.get_screenshot()
             func()
             time.sleep(1)
+        info("脚本结束")
 
     def do_script(self, func):
         while self.run_tag:
@@ -37,6 +39,7 @@ class App:
             self.check_power()
             func()
             time.sleep(1)
+        info("脚本结束")
 
     def do_dimension(self, func):
         while self.run_tag:
@@ -44,6 +47,7 @@ class App:
             self.directive.get_screenshot()
             func()
             time.sleep(1)
+        info("脚本结束")
 
     def red_heart_buy_power(self):
         while True:
@@ -110,8 +114,12 @@ class App:
         pass
 
     def world_arena(self):
-        if self.image.find_store_confirm():
+        if self.enough_world_arena_times and self.image.find_world_arena_times_less():
+            self.enough_world_arena_times = False
+        elif self.image.find_store_confirm():
             self.click()
+        elif not self.enough_world_arena_times:
+            self.run_tag = False
         elif self.image.find_rank_fight():
             self.click()
         elif self.image.find_victory():

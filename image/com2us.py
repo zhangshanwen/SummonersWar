@@ -98,6 +98,9 @@ class Com2usImage(Image):
     def find_world_arena(self):
         return self.find_page("img/com2us/world_arena.png", "世界竞技场")
 
+    def find_world_arena_times_less(self):
+        return self.find_page("img/com2us/world_arena_times_less.png", "世界竞技场出场次数不足")
+
     def find_rank_fight(self):
         return self.find_page("img/com2us/rank_fight.png", "排行战")
 

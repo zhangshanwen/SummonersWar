@@ -1,8 +1,12 @@
+import os
 import sys
 import time
 
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QPushButton, QCheckBox
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QPushButton, QCheckBox, QLabel
+from PyQt5.QtCore import QCoreApplication, Qt, QTimer
+from PyQt5.QtGui import QPalette, QBrush, QPixmap
+
+import common
 from app import App
 from threading import Thread
 
@@ -16,6 +20,8 @@ class Gui(QWidget):
         self.email_power_tag = True
 
         self.app = None
+
+        self.img = common.summoners_base_img
 
         self.starting = False
 
@@ -38,7 +44,26 @@ class Gui(QWidget):
         self.btn_start.clicked.connect(self.start_click)
         self.btn_start.move(170, 340)
 
+        self.lb1 = QLabel(self)
+        self.lb1.setGeometry(100, 400, 600, 270)
+        self.lb1.setScaledContents(True)
+        self.lb1.setStyleSheet("border: 2px solid red")
+        self.last_modify_time = 0
+        self.update_image()
+        timer = QTimer(self)
+        timer.timeout.connect(self.update_image)
+        timer.start(100)
+        # 显示窗口
         self.show()
+
+    def update_image(self):
+        if not os.path.exists(self.img):
+            return
+        if self.last_modify_time >= os.path.getmtime(self.img):
+            return
+        self.last_modify_time = os.path.getmtime(self.img)
+        pix = QPixmap(self.img)
+        self.lb1.setPixmap(pix)
 
     def run_app_thread(self):
         if not self.app:
@@ -86,5 +111,5 @@ class Gui(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = Gui()
-    w.resize(400, 400)
+    w.resize(800, 800)
     sys.exit(app.exec_())
