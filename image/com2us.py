@@ -106,3 +106,6 @@ class Com2usImage(Image):
 
     def find_cancel(self):
         return self.find_page("img/com2us/cancel.png", "取消")
+
+    def find_collect(self):
+        return self.find_page_one("img/com2us/collect.png", "收取")

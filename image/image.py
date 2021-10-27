@@ -8,6 +8,7 @@ from log import *
 
 Threshold = 0.8
 Offset = 0
+error_offset = 20
 
 
 class Image:
@@ -24,6 +25,32 @@ class Image:
             pass
         else:
             self.directive = directive
+
+    @staticmethod
+    def get_error_offset(loc):
+        return [i for i in loc if abs(i - np.min(loc) < 5)]
+
+    def find_page_one(self, path, msg=""):
+        try:
+            path = os.path.realpath(path)
+            img_rgb = cv2.imread(self.base_image)
+            img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+            template = cv2.imread(path, 0)
+            res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+            loc = np.where(res >= self.threshold)
+            if len(loc[0]) == 0 and len(loc[0]) == 0:
+                return False
+            self.directive.x = int(np.mean(self.get_error_offset(loc[0]))) + self.offset
+            self.directive.y = int(np.mean(self.get_error_offset(loc[1]))) + self.offset
+            if self.is_landscape:
+                self.directive.x, self.directive.y = self.directive.y, self.directive.x
+            if msg:
+                debug(msg)
+            # debug(loc)
+            return True
+        except Exception as e:
+            warning(e)
+            return False
 
     def find_page(self, path, msg=""):
         try:
@@ -53,11 +80,11 @@ class Image:
     def show(self):
         img_rgb = cv2.imread('../summoners.png')
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-        template = cv2.imread('../img/com2us/store_confirm.png', 0)
+        template = cv2.imread('../img/com2us/collect.png', 0)
         w, h = template.shape[::-1]
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= self.threshold)
-        print(loc)
+
         for pt in zip(*loc[::-1]):
             cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
 

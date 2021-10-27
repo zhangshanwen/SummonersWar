@@ -14,6 +14,7 @@ class App:
         self.run_tag = True
         self.buy_power_tag = True
         self.enough_red_heart = True
+        self.enough_email_power = True
         self.shell_rune_tag = True
         self.no_shelled_rune = True
 
@@ -38,7 +39,10 @@ class App:
     def red_heart_buy_power(self):
         while True:
             self.directive.get_screenshot()
-            if self.enough_red_heart and self.image.find_store_close():
+            if self.image.find_store():
+                self.click()
+                continue
+            if not self.enough_red_heart and self.image.find_store_close():
                 self.click()
                 break
             elif self.image.find_red_heart_shortage():
@@ -51,24 +55,47 @@ class App:
                 self.click()
             elif self.image.find_store_confirm():
                 self.click()
-            else:
+            time.sleep(2)
+
+    def gift_box_power(self):
+        is_collect = False
+        while True:
+            self.directive.get_screenshot()
+            if self.image.find_gift_box():
+                self.click()
+                continue
+            if is_collect and self.image.find_main_close():
+                self.click()
                 break
+            elif self.image.find_collect():
+                is_collect = True
+                self.click()
+            else:
+                self.enough_email_power = False
+                is_collect = True
+            time.sleep(2)
 
     def check_power(self):
-        # if self.buy_power_tag and self.image.find_energy_shortage():
-        #     info("准备购买体力，优先使用红心")
-        #     if self.enough_red_heart:
-        #         info("开始使用红心购买体力")
-        #         if self.image.find_store():
-        #             self.click()
-        #             self.red_heart_buy_power()
-        #     else:
-        #         info("红心不足，使用邮箱体力")
-        if self.image.find_energy_shortage():
-            if self.image.find_main_close():
-                self.click()
-                info(f"等待{common.dungeon_sleep_time}，补充能量")
-                time.sleep(common.dungeon_sleep_time)
+        if not self.image.find_energy_shortage():
+            return
+        if self.buy_power_tag:
+            info("准备购买体力，优先使用红心")
+            if self.enough_red_heart:
+                info("开始使用红心购买体力")
+                if self.image.find_store():
+                    self.click()
+                    self.red_heart_buy_power()
+                    return
+            elif self.enough_email_power:
+                info("开始领取邮箱体力")
+                if self.image.find_gift_box():
+                    self.click()
+                    self.gift_box_power()
+                    return
+        if self.image.find_main_close():
+            self.click()
+            info(f"等待{common.dungeon_sleep_time}，补充能量")
+            time.sleep(common.dungeon_sleep_time)
 
     def arena(self):
         # TODO 竞技场
@@ -122,6 +149,7 @@ class App:
                 self.no_shelled_rune = False
                 return
             self.click()
+            time.sleep(2)
             self.no_shelled_rune = True
         elif self.image.find_end_continuous_fight():
             info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
@@ -163,6 +191,8 @@ class App:
 if __name__ == '__main__':
     app = App()
     app.run()
+    # app.directive.get_screenshot()
+    # app.check_power()
     # app.directive.get_screenshot()
     # app.shell_rune()
     # app.world_arena()
