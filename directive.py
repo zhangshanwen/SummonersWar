@@ -39,14 +39,6 @@ class Directive:
         res = subprocess.getoutput(directive)
         return res
 
-    def click(self):
-        res = self.run_directive(f"shell input tap {self.x} {self.y}")
-        if "failed" in str(res):
-            warning(res)
-            time.sleep(1)
-            self.click()
-            return
-
     def connect_device(self, devices):
         while True:
             msg = "".join([f"{index}:{device}" for index, device in enumerate(devices)])
@@ -96,21 +88,24 @@ class Directive:
         info(res.find(self.package_name.split('/')[0]))
         return res.find(self.package_name.split('/')[0]) > -1
 
-    def screenshot(self):
-        res = self.run_directive(f" shell screencap  /sdcard/{self.base_img}")
-        if "failed" in str(res):
+    def do_check_res(self, func, res):
+        res = str(res).lower()
+        if "failed" in res or "error" in res:
             warning(res)
             time.sleep(1)
-            self.screenshot()
-            return
+            func()
+
+    def click(self):
+        res = self.run_directive(f"shell input tap {self.x} {self.y}")
+        self.do_check_res(self.click, res)
+
+    def screenshot(self):
+        res = self.run_directive(f" shell screencap  /sdcard/{self.base_img}")
+        self.do_check_res(self.screenshot, res)
 
     def pull(self):
         res = self.run_directive(f"pull /sdcard/{self.base_img}")
-        if "failed" in str(res):
-            warning(res)
-            time.sleep(1)
-            self.pull()
-            return
+        self.do_check_res(self.pull, res)
 
     def get_screenshot(self):
         last_modify_time = 0
