@@ -72,6 +72,7 @@ class Directive:
                 self.connect_device(devices)
             else:
                 self.device_id = devices[0]
+            self.adb += f" -s {self.device_id}"
 
     def start_app(self):
         info_start("正在启动应用")

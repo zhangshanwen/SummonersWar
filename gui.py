@@ -41,11 +41,12 @@ class Gui(QWidget):
         self.cb_power.stateChanged.connect(self.change_shell_rune)
 
         self.btn_start = QPushButton('开始', self)
+        self.btn_start.setGeometry(0, 0, 100, 100)
         self.btn_start.clicked.connect(self.start_click)
-        self.btn_start.move(170, 340)
+        self.btn_start.move(320, 20)
 
         self.lb1 = QLabel(self)
-        self.lb1.setGeometry(100, 400, 600, 270)
+        self.lb1.setGeometry(100, 200, 600, 270)
         self.lb1.setScaledContents(True)
         self.lb1.setStyleSheet("border: 2px solid red")
         self.last_modify_time = 0
@@ -111,5 +112,5 @@ class Gui(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = Gui()
-    w.resize(800, 800)
+    w.resize(800, 500)
     sys.exit(app.exec_())
