@@ -40,7 +40,12 @@ class Directive:
         return res
 
     def click(self):
-        return self.run_directive(f"shell input tap {self.x} {self.y}")
+        res = self.run_directive(f"shell input tap {self.x} {self.y}")
+        if "failed" in str(res):
+            warning(res)
+            time.sleep(1)
+            self.click()
+            return
 
     def connect_device(self, devices):
         while True:
