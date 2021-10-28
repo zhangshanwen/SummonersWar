@@ -9,6 +9,7 @@ from PyQt5.QtGui import QPalette, QBrush, QPixmap
 import common
 from app import App
 from threading import Thread
+from log import *
 
 
 class Gui(QWidget):
@@ -60,11 +61,14 @@ class Gui(QWidget):
     def update_image(self):
         if not os.path.exists(self.img):
             return
-        if self.last_modify_time >= os.path.getmtime(self.img):
-            return
-        self.last_modify_time = os.path.getmtime(self.img)
-        pix = QPixmap(self.img)
-        self.lb1.setPixmap(pix)
+        try:
+            if self.last_modify_time >= os.path.getmtime(self.img):
+                return
+            self.last_modify_time = os.path.getmtime(self.img)
+            pix = QPixmap(self.img)
+            self.lb1.setPixmap(pix)
+        except Exception as e:
+            warning(e)
 
     def run_app_thread(self):
         if not self.app:

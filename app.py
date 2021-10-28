@@ -52,9 +52,6 @@ class App:
     def red_heart_buy_power(self):
         while True:
             self.directive.get_screenshot()
-            if self.image.find_store():
-                self.click()
-                continue
             if not self.enough_red_heart and self.image.find_store_close():
                 self.click()
                 break
@@ -74,18 +71,14 @@ class App:
         is_collect = False
         while True:
             self.directive.get_screenshot()
-            if self.image.find_gift_box():
-                self.click()
-                continue
             if is_collect and self.image.find_main_close():
                 self.click()
                 break
             elif self.image.find_collect():
-                is_collect = True
                 self.click()
-            else:
-                self.enough_email_power = False
                 is_collect = True
+            else:
+                break
             time.sleep(2)
 
     def check_power(self):
@@ -96,12 +89,14 @@ class App:
             info("开始使用红心购买体力")
             if self.image.find_store():
                 self.click()
+                time.sleep(2)
                 self.red_heart_buy_power()
                 return
         elif self.email_power_tag and self.enough_email_power:
             info("开始领取邮箱体力")
             if self.image.find_gift_box():
                 self.click()
+                time.sleep(2)
                 self.gift_box_power()
                 return
         if self.image.find_main_close():
@@ -207,10 +202,9 @@ class App:
         self.run_script()
 
 
-if __name__ == '__main_ _':
+if __name__ == '__main__':
     app = App()
     app.run()
-    # app.directive.get_screenshot()
     # app.check_power()
     # app.directive.get_screenshot()
     # app.shell_rune()
