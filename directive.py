@@ -9,7 +9,8 @@ import subprocess
 
 
 class Directive:
-    def __init__(self, base_img=common.summoners_base_img, package_name=common.app_package_name):
+    def __init__(self, base_img=common.summoners_base_img, package_name=common.app_package_name,
+                 base_mp4=common.summoners_base_mp4):
         info_start("开始检测当前环境")
         system = platform.system().lower()
         info(f"当前运行环境为:{system}")
@@ -22,6 +23,7 @@ class Directive:
         self.base_img = base_img
         self.remove_base_image()
         self.package_name = package_name
+        self.base_mp4 = base_mp4
         # 检测设备
         self.check_device()
         self.x = 0
@@ -108,6 +110,14 @@ class Directive:
         res = self.run_directive(f"pull /sdcard/{self.base_img}")
         self.do_check_res(self.pull, res)
 
+    def screen_record(self):
+        res = self.run_directive(f" shell screenrecord --verbose --time-limit 7 /sdcard/{self.base_mp4} ")
+        self.do_check_res(self.screen_record, res)
+
+    def pull_record(self):
+        res = self.run_directive(f"pull /sdcard/{self.base_mp4}")
+        self.do_check_res(self.pull_record, res)
+
     def get_screenshot(self):
         last_modify_time = 0
         if os.path.exists(self.base_img):
@@ -127,11 +137,13 @@ class Directive:
 
 if __name__ == '__main__':
     d = Directive()
+    d.screen_record()
+    d.pull_record()
     ##1475 909
     # d.x, d.y = 484, 1054
     # info(d.click())
     # d.start_app()
-    info(d.get_screenshot())
+    # info(d.get_screenshot())
     # info(d.run_directive("  shell pm list packages -3 "))
     # info(d.run_directive(" shell dumpsys activity top | grep ACTIVITY "))
     # info(int(d.last_modify_time))

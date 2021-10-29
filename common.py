@@ -2,6 +2,7 @@ windows_os = "windows"
 # 魔灵
 app_package_name = "com.com2us.smon.normal.freefull.google.kr.android.common/.SubActivity "
 summoners_base_img = "summoners.png"
+summoners_base_mp4 = "summoners.mp4"
 dungeon_sleep_time = 30  # 地下城休眠时间
 world_arena_sleep_time = 10  # 世界竞技场休眠时间
 
