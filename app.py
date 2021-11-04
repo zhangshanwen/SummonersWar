@@ -24,7 +24,7 @@ class App:
     def click(self):
         self.directive.click()
 
-    def do_arena(self, func):
+    def do_no_check_power(self, func):
         while self.run_tag:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
@@ -32,7 +32,7 @@ class App:
             time.sleep(1)
         info("脚本结束")
 
-    def do_script(self, func):
+    def do_check_power(self, func):
         while self.run_tag:
             info_start("脚本正在执行")
             self.directive.get_screenshot()
@@ -50,7 +50,7 @@ class App:
         info("脚本结束")
 
     def red_heart_buy_power(self):
-        while True:
+        while self.run_tag:
             self.directive.get_screenshot()
             if not self.enough_red_heart and self.image.find_store_close():
                 self.click()
@@ -69,7 +69,7 @@ class App:
 
     def gift_box_power(self):
         is_collect = False
-        while True:
+        while self.run_tag:
             self.directive.get_screenshot()
             if is_collect and self.image.find_main_close():
                 self.click()
@@ -131,7 +131,7 @@ class App:
 
     def shell_rune(self):
         is_sell = False
-        while True:
+        while self.run_tag:
             if is_sell and self.image.find_cancel():
                 self.click()
                 break
@@ -182,15 +182,18 @@ class App:
         info_start("开始检查当前页面")
         self.directive.get_screenshot()
         if self.image.find_dragon_dungeon():
-            self.do_script(self.dungeon)
+            self.do_check_power(self.dungeon)
         elif self.image.find_bloody_palace():
-            self.do_script(self.bloody_palace)
+            self.do_check_power(self.bloody_palace)
         elif self.image.find_giant_dungeon():
-            self.do_script(self.dungeon)
+            self.do_check_power(self.dungeon)
         elif self.image.find_death_dungeon():
-            self.do_script(self.dungeon)
+            self.do_check_power(self.dungeon)
         elif self.image.find_world_arena():
-            self.do_arena(self.world_arena)
+            self.do_no_check_power(self.world_arena)
+        elif self.image.find_continuous_fight():
+            info("次元连续战斗")
+            self.do_no_check_power(self.dungeon)
         else:
             warning("无法识别当前页面")
 
@@ -209,7 +212,7 @@ if __name__ == '__main__':
     # app.directive.get_screenshot()
     # app.shell_rune()
     # app.world_arena()
-    # app.do_script(app.dungeon)
+    # app.do_check_power(app.dungeon)
     # app.red_heart_buy_power()
     # app.directive.get_screenshot()
     # app.shell_rune()

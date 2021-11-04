@@ -1,27 +1,27 @@
-import os.path
+import os
 import sys
+from threading import Thread
+
 from PyQt5.Qt import QUrl, QVideoWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
+from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QCheckBox
+from PyQt5.QtCore import Qt, QTimer, QRect
 
-import sys
-import time
-
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QPushButton, QCheckBox, QLabel
-from PyQt5.QtCore import QCoreApplication, Qt, QTimer, QRect
-from PyQt5.QtGui import QPalette, QBrush, QPixmap
-from threading import Thread
 import common
 from app import App
-from threading import Thread
 from log import *
 from directive import Directive
+from code import get_id
 
 
 class Gui(QWidget):
 
     def __init__(self):
         super().__init__()
+
+        self.mp4_path = ""
+        # self.check_path()
+
         self.buy_power_tag = True
         self.sell_rune_tag = True
         self.email_power_tag = True
@@ -53,38 +53,75 @@ class Gui(QWidget):
         self.btn_start.move(320, 20)
         vw = QVideoWidget(self)  # 定义视频显示的widget
         vw.setGeometry(QRect(100, 200, 600, 270))
+        self.add_index = 0
+        self.pull_index = 0
+
         self.directive = Directive()
         self.player = QMediaPlayer(self)
         self.player.setVideoOutput(vw)
-
+        self.playlist = QMediaPlaylist()
+        self.player.setPlaylist(self.playlist)
+        # self.start_record()
+        for i in range(7):
+            self.playlist.addMedia(
+                QMediaContent(QUrl.fromLocalFile(os.path.realpath(f"mp4/com2us/d40359fa7d65473eb172e6bc95bbbaa3/summoners_{i}.mp4")))
+            )
+        # self.playlist.addMedia(
+        #         QMediaContent(QUrl.fromLocalFile(os.path.realpath(f"mp4/com2us/summoners_{i}.mp4")))
+        #     )
+        self.player.play()
+        # timer = QTimer(self)
+        # timer.timeout.connect(self.start_record)
+        # timer.start()
+        # self.start_thread()
         self.last_modify_time = 0
-        self.start_thread()
-        self.update_image()
-        timer = QTimer(self)
-        timer.timeout.connect(self.update_image)
-        timer.start(500)
         self.show()
 
-    def start_thread(self):
-        t = Thread(target=self.start_record)
-        t.start()
-
-    def start_record(self):
+    def run_start_record(self):
         while True:
+            # if not self.starting:
+            #     continue
             self.directive.screen_record()
             self.directive.pull_record()
+            file_name = self.new_file_name(self.pull_index)
+            os.renames(self.base_mp4_name, file_name)
+            self.pull_index += 1
 
-    def update_image(self):
-        if not os.path.exists("demo.mp4"):
+    def start_thread(self):
+        t = Thread(target=self.run_start_record)
+        t.start()
+
+    def check_path(self):
+        self.mp4_path = os.path.join(common.summoners_mp4_path, get_id())
+        if os.path.exists(self.mp4_path):
             return
-        try:
-            if self.last_modify_time >= os.path.getmtime(common.summoners_base_mp4):
-                return
-            self.last_modify_time = os.path.getmtime(common.summoners_base_mp4)
-            self.player.setMedia(QMediaContent(QUrl.fromLocalFile(os.path.realpath(common.summoners_base_mp4))))
+        os.makedirs(self.mp4_path)
+
+    @property
+    def base_mp4_name(self):
+        return common.summoners_base_mp4_name + ".mp4"
+
+    @staticmethod
+    def get_mp4_name(*args):
+        name = "".join(args)
+        return name + ".mp4"
+
+    def new_file_name(self, index):
+        new_name = self.get_mp4_name(common.summoners_base_mp4_name, f"_{index}")
+        new_path = os.path.join(self.mp4_path, new_name)
+        return new_path
+
+    def start_record(self):
+        file_name = self.new_file_name(self.add_index)
+        if not os.path.exists(file_name):
+            return
+        self.playlist.addMedia(
+            QMediaContent(QUrl.fromLocalFile(os.path.realpath(file_name)))
+        )
+        if self.player.state() != 1:
+            self.playlist.setCurrentIndex(self.add_index)
             self.player.play()
-        except Exception as e:
-            warning(e)
+        self.add_index += 1
 
     def run_app_thread(self):
         if not self.app:

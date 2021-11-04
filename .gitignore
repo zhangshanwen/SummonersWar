@@ -1,4 +1,8 @@
 .idea/
-summoners.png
 __pycache__
+
+mp4/
+venv/
+
+summoners.png
 dd.png
