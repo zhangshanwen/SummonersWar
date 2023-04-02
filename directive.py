@@ -7,6 +7,11 @@ from log import *
 
 import subprocess
 
+"""
+模拟器端口
+mumu 7555
+夜神 62001 
+"""
 
 class Directive:
     def __init__(self, base_img=common.summoners_base_img, package_name=common.app_package_name,
@@ -15,9 +20,10 @@ class Directive:
         system = platform.system().lower()
         info(f"当前运行环境为:{system}")
         if system == common.windows_os:
-            self.adb = "./command/adb.exe"
+            self.adb = ".\\command\\adb.exe"
         else:
             self.adb = "./command/adb"
+        self.adb_port = 62001
         self.has_device = False
         self.device_id = ""
         self.base_img = base_img
@@ -59,6 +65,7 @@ class Directive:
 
     def check_device(self):
         info_start("开始检查连接设备")
+        self.re_connect()
         res = self.run_directive("devices")
         devices = []
         if res:
@@ -117,6 +124,10 @@ class Directive:
     def pull_record(self):
         res = self.run_directive(f"pull /sdcard/{self.base_mp4}")
         self.do_check_res(self.pull_record, res)
+
+    def re_connect(self):
+        if self.adb_port > 0:
+            self.run_directive(f"connect 127.0.0.1:{self.adb_port}")
 
     def get_screenshot(self):
         last_modify_time = 0

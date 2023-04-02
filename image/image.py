@@ -6,7 +6,7 @@ from directive import Directive
 import common
 from log import *
 
-Threshold = 0.8
+Threshold = 0.70005
 Offset = 0
 error_offset = 20
 
@@ -78,7 +78,7 @@ class Image:
             return False
 
     def show(self):
-        img_rgb = cv2.imread('../summoners.png')
+        img_rgb = cv2.imread('../rank_fight_1.png')
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
         template = cv2.imread('../img/com2us/collect.png', 0)
         w, h = template.shape[::-1]

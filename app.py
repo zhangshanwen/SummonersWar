@@ -8,7 +8,7 @@ from image.com2us import Com2usImage
 
 
 class App:
-    def __init__(self, buy_power_tag=True, shell_rune_tag=True, email_power_tag=True):
+    def __init__(self, buy_power_tag=False, shell_rune_tag=True, email_power_tag=True):
         self.directive = Directive()
         self.image = Com2usImage(directive=self.directive)
         self.run_tag = True
@@ -17,6 +17,7 @@ class App:
         self.email_power_tag = email_power_tag
 
         self.enough_red_heart = True
+        self.bloody_palace_is_not_auto_fight = True
         self.enough_email_power = True
         self.no_shelled_rune = True
         self.enough_world_arena_times = True
@@ -24,17 +25,21 @@ class App:
     def click(self):
         self.directive.click()
 
+    # 不检查体力
     def do_no_check_power(self, func):
         while self.run_tag:
             info_start("脚本正在执行")
+            self.directive.re_connect()
             self.directive.get_screenshot()
             func()
             time.sleep(1)
         info("脚本结束")
 
+    # 检查体力
     def do_check_power(self, func):
         while self.run_tag:
             info_start("脚本正在执行")
+            self.directive.re_connect()
             self.directive.get_screenshot()
             self.check_power()
             func()
@@ -44,6 +49,7 @@ class App:
     def do_dimension(self, func):
         while self.run_tag:
             info_start("次元脚本正在执行")
+            self.directive.re_connect()
             self.directive.get_screenshot()
             func()
             time.sleep(1)
@@ -78,6 +84,7 @@ class App:
                 self.click()
                 is_collect = True
             else:
+                self.enough_email_power = False
                 break
             time.sleep(2)
 
@@ -108,6 +115,28 @@ class App:
         # TODO 竞技场
         pass
 
+    def special_game(self):
+        if self.enough_world_arena_times:
+            self.enough_world_arena_times = False
+
+        elif self.image.find_store_confirm():
+            self.click()
+        elif not self.enough_world_arena_times:
+            self.run_tag = False
+        elif self.image.find_victory():
+            self.click()
+        elif self.image.find_failed():
+            self.click()
+        elif self.image.find_confirm():
+            self.click()
+        elif self.image.find_game_start():
+            self.click()
+        elif self.image.find_play():
+            self.click()
+        else:
+            info(f"休眠{common.world_arena_sleep_time}", "节省数据开销")
+            time.sleep(common.world_arena_sleep_time)
+
     def world_arena(self):
         if self.enough_world_arena_times and self.image.find_world_arena_times_less():
             self.enough_world_arena_times = False
@@ -115,15 +144,36 @@ class App:
             self.click()
         elif not self.enough_world_arena_times:
             self.run_tag = False
-        elif self.image.find_rank_fight():
-            self.click()
         elif self.image.find_victory():
             self.click()
         elif self.image.find_failed():
             self.click()
-        elif self.image.find_play():
-            self.click()
         elif self.image.find_confirm():
+            self.click()
+        elif self.image.find_rank_fight():
+            self.click()
+        elif self.image.find_play_setting() and self.image.find_play():
+            self.click()
+        else:
+            info(f"休眠{common.world_arena_sleep_time}", "节省数据开销")
+            time.sleep(common.world_arena_sleep_time)
+
+    def game_start(self):
+        if self.enough_world_arena_times and self.image.find_special_game_times_less():
+            self.enough_world_arena_times = False
+        elif self.image.find_confirm():
+            self.click()
+        elif self.image.find_store_confirm():
+            self.click()
+        elif self.image.find_sell_selected_confirm():
+            self.click()
+        elif self.image.find_game_start():
+            self.click()
+        elif not self.enough_world_arena_times:
+            self.run_tag = False
+        elif self.image.find_victory():
+            self.click()
+        elif self.image.find_failed():
             self.click()
         else:
             info(f"休眠{common.world_arena_sleep_time}", "节省数据开销")
@@ -167,9 +217,14 @@ class App:
             time.sleep(common.dungeon_sleep_time)
 
     def bloody_palace(self):
-        if self.image.find_start_fight():
+        if self.image.find_yes():
             self.click()
-        elif self.image.find_play():
+        elif self.image.find_auto_fight():
+            self.bloody_palace_is_not_auto_fight = False
+            self.click()
+        elif self.image.find_start_fight():
+            self.click()
+        elif self.bloody_palace_is_not_auto_fight and self.image.find_play():
             self.click()
         elif self.image.find_confirm():
             self.click()
@@ -177,6 +232,9 @@ class App:
             self.click()
         elif self.image.find_victory():
             self.click()
+        else:
+            info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
+            time.sleep(common.dungeon_sleep_time)
 
     def run_script(self):
         info_start("开始检查当前页面")
@@ -189,11 +247,14 @@ class App:
             self.do_check_power(self.dungeon)
         elif self.image.find_death_dungeon():
             self.do_check_power(self.dungeon)
+        elif self.image.find_game_start():
+            self.do_no_check_power(self.game_start)
         elif self.image.find_world_arena():
             self.do_no_check_power(self.world_arena)
+
         elif self.image.find_continuous_fight():
-            info("次元连续战斗")
-            self.do_no_check_power(self.dungeon)
+            # 各种连续战斗都可以识别
+            self.do_check_power(self.dungeon)
         else:
             warning("无法识别当前页面")
 
@@ -206,10 +267,15 @@ class App:
 
 
 if __name__ == '__main__':
-    app = App()
-    app.run()
-    # app.check_power()
+    c = Com2usImage()
+    c.directive = Directive()
+    print(c.find_play_setting(),c.find_play())
+    # app = App()
     # app.directive.get_screenshot()
+    # app.run()
+    # app.image.find_world_arena()
+
+    # app.check_power()
     # app.shell_rune()
     # app.world_arena()
     # app.do_check_power(app.dungeon)

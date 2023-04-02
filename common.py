@@ -1,6 +1,6 @@
 windows_os = "windows"
 # 魔灵
-app_package_name = "com.com2us.smon.normal.freefull.google.kr.android.common/.SubActivity "
+app_package_name = "com.com2us.smon.normal.freefull.google.kr.android.common/.SubActivity"
 summoners_base_img = "summoners.png"
 summoners_base_mp4_name = "summoners"
 summoners_mp4_path = "mp4/com2us"

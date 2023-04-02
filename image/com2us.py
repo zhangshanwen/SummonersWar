@@ -1,6 +1,5 @@
 from .image import Image
 
-
 class Com2usImage(Image):
     def find_ad(self):
         return self.find_page('img/com2us/ad_total_not_tip.png', "启动app 弹出广告")
@@ -31,7 +30,8 @@ class Com2usImage(Image):
 
     def find_play(self):
         return self.find_page('img/com2us/play.png', "自动战斗")
-
+    def find_auto_fight(self):
+        return  self.find_page('img/com2us/auto_fight.png','试炼之塔自动战斗')
     def find_continuous_fight(self):
         return self.find_page("img/com2us/continuous_fight.png", "连续战斗")
 
@@ -48,7 +48,7 @@ class Com2usImage(Image):
         return self.find_page("img/com2us/defeated.png", "失败")
 
     def find_confirm(self):
-        return self.find_page("img/com2us/confirm.png", "确认")
+        return self.find_page("img/com2us/confirm_1.png", "确认")
 
     def find_next_floor(self):
         return self.find_page("img/com2us/next_floor.png", "下一层")
@@ -98,11 +98,14 @@ class Com2usImage(Image):
     def find_world_arena(self):
         return self.find_page("img/com2us/world_arena.png", "世界竞技场")
 
+    def find_game_start(self):
+        return self.find_page("img/com2us/game_start.png", "比赛开始")
+
     def find_world_arena_times_less(self):
         return self.find_page("img/com2us/world_arena_times_less.png", "世界竞技场出场次数不足")
 
     def find_rank_fight(self):
-        return self.find_page("img/com2us/rank_fight.png", "排行战")
+        return self.find_page("img/com2us/rank_fight_1.png", "排行战")
 
     def find_failed(self):
         return self.find_page("img/com2us/failed.png", "失败")
@@ -112,3 +115,12 @@ class Com2usImage(Image):
 
     def find_collect(self):
         return self.find_page_one("img/com2us/collect.png", "收取")
+
+    def find_special_game(self):
+        return self.find_page_one("img/com2us/special_game.png", "特别联赛")
+    def find_special_game_times_less(self):
+        return self.find_page("img/com2us/special_game_times_less.png", "特殊竞赛出场次数不足")
+
+    def find_play_setting(self):
+        return self.find_page("img/com2us/play_setting.png", "设置")
+
