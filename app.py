@@ -267,12 +267,12 @@ class App:
 
 
 if __name__ == '__main__':
-    c = Com2usImage()
-    c.directive = Directive()
-    print(c.find_play_setting(),c.find_play())
-    # app = App()
+    # c = Com2usImage()
+    # c.directive = Directive()
+    # print(c.find_play_setting(),c.find_play())
+    app = App()
     # app.directive.get_screenshot()
-    # app.run()
+    app.run()
     # app.image.find_world_arena()
 
     # app.check_power()
