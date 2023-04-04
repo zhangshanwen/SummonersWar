@@ -161,6 +161,8 @@ class App:
     def game_start(self):
         if self.enough_world_arena_times and self.image.find_special_game_times_less():
             self.enough_world_arena_times = False
+        elif self.image.find_play_setting() and self.image.find_play():
+            self.click()
         elif self.image.find_confirm():
             self.click()
         elif self.image.find_store_confirm():

@@ -23,7 +23,8 @@ class Directive:
             self.adb = ".\\command\\adb.exe"
         else:
             self.adb = "./command/adb"
-        self.adb_port = 62001
+        # self.adb_port = 62001
+        self.adb_port = 0
         self.has_device = False
         self.device_id = ""
         self.base_img = base_img
