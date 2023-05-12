@@ -149,6 +149,7 @@ class Directive:
 
 if __name__ == '__main__':
     d = Directive()
+    d.screenshot()
     d.pull()
     ##1475 909
     # d.x, d.y = 484, 1054

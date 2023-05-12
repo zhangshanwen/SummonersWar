@@ -1,5 +1,6 @@
 from .image import Image
 
+
 class Com2usImage(Image):
     def find_ad(self):
         return self.find_page('img/com2us/ad_total_not_tip.png', "启动app 弹出广告")
@@ -30,8 +31,10 @@ class Com2usImage(Image):
 
     def find_play(self):
         return self.find_page('img/com2us/play.png', "自动战斗")
+
     def find_auto_fight(self):
-        return  self.find_page('img/com2us/auto_fight.png','试炼之塔自动战斗')
+        return self.find_page('img/com2us/auto_fight.png', '试炼之塔自动战斗')
+
     def find_continuous_fight(self):
         return self.find_page("img/com2us/continuous_fight.png", "连续战斗")
 
@@ -105,7 +108,7 @@ class Com2usImage(Image):
         return self.find_page("img/com2us/world_arena_times_less.png", "世界竞技场出场次数不足")
 
     def find_rank_fight(self):
-        return self.find_page("img/com2us/rank_fight_1.png", "排行战")
+        return self.find_page("img/com2us/rank_fight.png", "排行战")
 
     def find_failed(self):
         return self.find_page("img/com2us/failed.png", "失败")
@@ -118,9 +121,24 @@ class Com2usImage(Image):
 
     def find_special_game(self):
         return self.find_page_one("img/com2us/special_game.png", "特别联赛")
+
     def find_special_game_times_less(self):
         return self.find_page("img/com2us/special_game_times_less.png", "特殊竞赛出场次数不足")
 
     def find_play_setting(self):
         return self.find_page("img/com2us/play_setting.png", "设置")
 
+    def find_pls_choice_monster(self):
+        return self.find_page("img/com2us/pls_choice_monster.png", "请选择魔灵")
+
+    def find_monster_confirm(self):
+        return self.find_page("img/com2us/monster_confirm.png", "魔灵确认")
+
+    def find_pls_choice_leader(self):
+        return self.find_page("img/com2us/pls_choice_leader.png", "请选择领袖魔灵")
+
+    def find_name(self, name):
+        return self.find_page(f"img/com2us/{name}.png", name)
+
+    def find_empty_monsters(self):
+        return self.find_images("img/com2us/empty_monster.png", "未选择魔灵")

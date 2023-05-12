@@ -6,6 +6,44 @@ from log import *
 from directive import Directive
 from image.com2us import Com2usImage
 
+# has_arena_leader 是否有竞技场领袖技能
+monsters = {
+    "光人鱼": {
+    },
+    "光鬼": {
+    },
+    "水仙人": {
+        "arena_leader_weight": 1,
+    },
+    "水前锋": {
+        "arena_leader_weight": 4,
+    },
+    "水华熊": {
+        "arena_leader_weight": 3,
+    },
+    "风滑板": {
+        "arena_leader_weight": 5,
+    },
+    "风画师": {
+        "arena_leader_weight": 2,
+    },
+    "风马桶": {
+    },
+}
+
+# 世界竞技场上场魔灵(注意越靠前，被选中的几率越大)
+world_arena_monsters = [
+    "风滑板",
+    "光人鱼",
+    "风画师",
+    "水仙人",
+    "水前锋",
+    "水华熊",
+    "风马桶",
+    "光鬼",
+]
+world_arena_monsters_on = []
+
 
 class App:
     def __init__(self, buy_power_tag=False, shell_rune_tag=True, email_power_tag=True):
@@ -137,9 +175,57 @@ class App:
             info(f"休眠{common.world_arena_sleep_time}", "节省数据开销")
             time.sleep(common.world_arena_sleep_time)
 
+    def choice_monster(self):
+        if len(world_arena_monsters_on) == 5:
+            info("已选齐魔灵.......")
+            return
+        empty_monsters = self.image.find_empty_monsters()
+        # 判断当前轮次需要选择几个魔灵
+        choice_monster_times = 2
+        if len(empty_monsters) == 5 and empty_monsters[0][0] != empty_monsters[1][0] or len(empty_monsters) == 1:
+            choice_monster_times = 1
+        is_find = False
+        for name in world_arena_monsters:
+            if choice_monster_times > 0 and name not in world_arena_monsters_on and self.image.find_name(name):
+                if self.directive.y < 700:
+                    # TODO 变化的 y, 控制到下方可选区域
+                    continue
+                info(f"找到了:{name}")
+                # 选择了进入下一个等待周期
+                self.click()
+                world_arena_monsters_on.append(name)
+                choice_monster_times -= 1
+                time.sleep(1)
+                is_find = True
+        self.directive.get_screenshot()
+        time.sleep(1)
+        if is_find and self.image.find_monster_confirm():
+            self.click()
+
+    def choice_leader(self):
+        info(f"当前选择阵容:{world_arena_monsters_on}")
+        world_arena_monsters_leader = [{"name": k, "arena_leader_weight": v.get("arena_leader_weight", 0)} for k, v in
+                                       monsters.items() if k in world_arena_monsters]
+        world_arena_monsters_leader = sorted(world_arena_monsters_leader, key=lambda i: i.get("arena_leader_weight"),
+                                             reverse=True)
+        world_arena_monsters_leader = [i['name'] for i in world_arena_monsters_leader]
+        self.directive.get_screenshot()
+        time.sleep(1)
+        for name in world_arena_monsters_leader:
+            if self.image.find_name(name):
+                info(f"选择领袖:{name},{world_arena_monsters_on}")
+                self.click()
+                break
+
     def world_arena(self):
         if self.enough_world_arena_times and self.image.find_world_arena_times_less():
             self.enough_world_arena_times = False
+        elif self.image.find_pls_choice_leader():
+            self.choice_leader()
+            time.sleep(3)
+        elif self.image.find_pls_choice_monster():
+            self.choice_monster()
+            time.sleep(3)
         elif self.image.find_store_confirm():
             self.click()
         elif not self.enough_world_arena_times:
@@ -151,6 +237,7 @@ class App:
         elif self.image.find_confirm():
             self.click()
         elif self.image.find_rank_fight():
+            world_arena_monsters_on.clear()
             self.click()
         elif self.image.find_play_setting() and self.image.find_play():
             self.click()
@@ -207,13 +294,9 @@ class App:
         elif self.image.find_yes():
             self.click()
         elif self.image.find_once_again():
-            if self.no_shelled_rune and self.shell_rune_tag:
-                self.shell_rune()
-                self.no_shelled_rune = False
-                return
+            # 不再检查是否有卖出
             self.click()
             time.sleep(2)
-            self.no_shelled_rune = True
         elif self.image.find_end_continuous_fight():
             info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
             time.sleep(common.dungeon_sleep_time)
@@ -253,7 +336,6 @@ class App:
             self.do_no_check_power(self.game_start)
         elif self.image.find_world_arena():
             self.do_no_check_power(self.world_arena)
-
         elif self.image.find_continuous_fight():
             # 各种连续战斗都可以识别
             self.do_check_power(self.dungeon)
@@ -269,18 +351,5 @@ class App:
 
 
 if __name__ == '__main__':
-    # c = Com2usImage()
-    # c.directive = Directive()
-    # print(c.find_play_setting(),c.find_play())
     app = App()
-    # app.directive.get_screenshot()
     app.run()
-    # app.image.find_world_arena()
-
-    # app.check_power()
-    # app.shell_rune()
-    # app.world_arena()
-    # app.do_check_power(app.dungeon)
-    # app.red_heart_buy_power()
-    # app.directive.get_screenshot()
-    # app.shell_rune()
