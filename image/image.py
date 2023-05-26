@@ -76,9 +76,9 @@ class Image:
             return False
 
     def show(self):
-        img_rgb = cv2.imread('../summoners_1.png')
+        img_rgb = cv2.imread('../summoners.png')
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-        template = cv2.imread('../img/com2us/pls_choice_monster.png', 0)
+        template = cv2.imread('../img/com2us/store_confirm.png', 0)
         w, h = template.shape[::-1]
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= self.threshold)

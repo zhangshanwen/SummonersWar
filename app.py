@@ -21,6 +21,9 @@ monsters = {
     "水华熊": {
         "arena_leader_weight": 3,
     },
+    "水御术师": {
+        "arena_leader_weight": 3,
+    },
     "风滑板": {
         "arena_leader_weight": 5,
     },
@@ -34,6 +37,7 @@ monsters = {
 # 世界竞技场上场魔灵(注意越靠前，被选中的几率越大)
 world_arena_monsters = [
     "风滑板",
+    "水御术师",
     "光人鱼",
     "风画师",
     "水仙人",
@@ -293,8 +297,30 @@ class App:
             info("开始等待")
         elif self.image.find_yes():
             self.click()
+        elif self.image.find_store_confirm():
+            self.click()
         elif self.image.find_once_again():
-            # 不再检查是否有卖出
+            if self.no_shelled_rune and self.shell_rune_tag:
+                self.shell_rune()
+                self.no_shelled_rune = False
+                return
+            self.click()
+            time.sleep(2)
+            self.no_shelled_rune = True
+        elif self.image.find_end_continuous_fight():
+            info(f"休眠{common.dungeon_sleep_time}", "节省数据开销")
+            time.sleep(common.dungeon_sleep_time)
+
+    def continuous_fight(self):
+        """连续战斗,无需处理奖励"""
+        if self.image.find_continuous_fight():
+            self.click()
+            info("开始等待")
+        elif self.image.find_yes():
+            self.click()
+        elif self.image.find_store_confirm():
+            self.click()
+        elif self.image.find_once_again():
             self.click()
             time.sleep(2)
         elif self.image.find_end_continuous_fight():
@@ -338,7 +364,7 @@ class App:
             self.do_no_check_power(self.world_arena)
         elif self.image.find_continuous_fight():
             # 各种连续战斗都可以识别
-            self.do_check_power(self.dungeon)
+            self.do_check_power(self.continuous_fight)
         else:
             warning("无法识别当前页面")
 
