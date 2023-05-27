@@ -10,7 +10,7 @@ import subprocess
 """
 模拟器端口
 mumu 7555
-夜神 62001 
+夜神 62001 , 62025
 """
 
 class Directive:
