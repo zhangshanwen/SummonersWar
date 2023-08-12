@@ -6,6 +6,9 @@ from log import *
 from directive import Directive
 from image.com2us import Com2usImage
 
+"""
+该脚本仅支持1080*1920分辨率
+"""
 # has_arena_leader 是否有竞技场领袖技能
 monsters = {
     "光人鱼": {
@@ -224,12 +227,12 @@ class App:
     def world_arena(self):
         if self.enough_world_arena_times and self.image.find_world_arena_times_less():
             self.enough_world_arena_times = False
-        elif self.image.find_pls_choice_leader():
-            self.choice_leader()
-            time.sleep(3)
-        elif self.image.find_pls_choice_monster():
-            self.choice_monster()
-            time.sleep(3)
+        # elif self.image.find_pls_choice_leader():
+        #     self.choice_leader()
+        #     time.sleep(3)
+        # elif self.image.find_pls_choice_monster():
+        #     self.choice_monster()
+        #     time.sleep(3)
         elif self.image.find_store_confirm():
             self.click()
         elif not self.enough_world_arena_times:

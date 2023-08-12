@@ -5,7 +5,7 @@ import os
 import common
 from log import *
 
-Threshold = 0.75
+Threshold = 0.60
 Offset = 0
 error_offset = 20
 
